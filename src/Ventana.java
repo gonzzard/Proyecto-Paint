@@ -14,6 +14,9 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+import java.util.ArrayList;
 import static javafx.scene.Cursor.cursor;
 import javax.swing.ImageIcon;
 
@@ -36,6 +39,7 @@ public class Ventana extends javax.swing.JFrame {
     private Line2D.Double linea = new Line2D.Double();
     private Ellipse2D.Double circulo = new Ellipse2D.Double();
     private Rectangle2D.Double rectangulo = new Rectangle2D.Double();
+    private ArrayList<Shape> objetos = new ArrayList<Shape>();
 
     /**
      * Variable para las opciones:
@@ -44,8 +48,8 @@ public class Ventana extends javax.swing.JFrame {
      * Opcion 5: Elipse, Opcion 6: Rectangulo
      */
     int opcion = 3;
-
     int x1, x2, y1, y2;
+    double xOrigen, yOrigen;
 
     /**
      * Creates new form Ventana
@@ -54,6 +58,7 @@ public class Ventana extends javax.swing.JFrame {
         initComponents();
         int ancho = jPanel1.getWidth();
         int alto = jPanel1.getHeight();
+        objetos.add(circulo);
         buffer = (BufferedImage) jPanel1.createImage(ancho, alto);
         Graphics2D g2 = buffer.createGraphics();
         g2.setColor(Color.white);
@@ -245,27 +250,23 @@ public class Ventana extends javax.swing.JFrame {
                 // Esquina superior izq circulo
                 circulo.x = evt.getX();
                 circulo.y = evt.getY();
-                // Largo circulo
-                circulo.width = evt.getX();
-                circulo.height = evt.getY();
+                //centro
+                xOrigen = circulo.x;
+                yOrigen = circulo.y;
                 break;
             // Rectangulo    
             case 2:
                 // Esquina superior izq cuadrado
-                rectangulo.x = evt.getX();
-                rectangulo.y = evt.getY();
-                // Largo cuadrado
-                rectangulo.x = evt.getX();
-                rectangulo.height = evt.getY();
+                xOrigen = evt.getX();
+                yOrigen = evt.getY();
+                rectangulo.x = xOrigen;
+                rectangulo.y = yOrigen;
                 break;
             // Linea
             case 3:
                 // Punto inicio
                 linea.x1 = evt.getX();
                 linea.y1 = evt.getY();
-                // Punto fin
-                linea.y2 = evt.getY();
-                linea.x2 = evt.getX();
                 break;
             // Libre
             case 4:
@@ -276,17 +277,15 @@ public class Ventana extends javax.swing.JFrame {
                 // Esquina superior izq elipse
                 circulo.x = evt.getX();
                 circulo.y = evt.getY();
-                // Largo elipse
-                circulo.width = evt.getX();
-                circulo.height = evt.getY();
+                xOrigen = circulo.x;
+                yOrigen = circulo.y;
                 break;
             case 6:
                 // Esquina superior izq rectangulo
-                rectangulo.x = evt.getX();
-                rectangulo.y = evt.getY();
-                // Largo rectangulo
-                rectangulo.x = evt.getX();
-                rectangulo.height = evt.getY();
+                xOrigen = evt.getX();
+                yOrigen = evt.getY();
+                rectangulo.x = xOrigen;
+                rectangulo.y = yOrigen;
                 break;
         }
     }//GEN-LAST:event_jPanel1MousePressed
@@ -296,13 +295,41 @@ public class Ventana extends javax.swing.JFrame {
         g2.drawImage(buffer, 0, 0, null);
         switch (opcion) {
             case 1:
-                circulo.width = evt.getX() - circulo.x;
-                circulo.height = evt.getX() - circulo.x;
+                double radio,
+                 d1,
+                 d2;
+                d1 = evt.getX() - xOrigen;
+                if (d1 < 0) {
+                    d1 = xOrigen - evt.getX();
+                }
+                d2 = evt.getY() - yOrigen;
+                if (d2 < 0) {
+                    d2 = yOrigen - evt.getY();
+                }
+                radio = pow(d1, 2) + pow(d2, 2); // modulo vector
+                if (radio < 0) {
+                    radio = radio * -1;
+                }
+                radio = sqrt(radio);
+                circulo.x = xOrigen - radio;
+                circulo.y = yOrigen - radio;
+                circulo.height = radio * 2;
+                circulo.width = circulo.height;
                 g2.draw(circulo);
                 break;
             case 2:
-                rectangulo.width = evt.getX() - rectangulo.x;
-                rectangulo.height = evt.getX() - rectangulo.x;
+                double distancia = xOrigen - evt.getX();
+                if (distancia < 0 )
+                    distancia = evt.getX() - xOrigen;
+                double yDistancia = yOrigen - evt.getY();
+                if (yDistancia < 0 )
+                    yDistancia = evt.getY() - yOrigen;
+                if (distancia < yDistancia)
+                    distancia = yDistancia;
+                rectangulo.x = xOrigen - distancia;
+                rectangulo.y = yOrigen - distancia;
+                rectangulo.width = distancia * 2;
+                rectangulo.height = rectangulo.width;
                 g2.draw(rectangulo);
                 break;
             case 3:
@@ -322,15 +349,22 @@ public class Ventana extends javax.swing.JFrame {
                 }
                 break;
             case 5:
-                circulo.width = evt.getX() - circulo.x;
-                circulo.height = evt.getY() - circulo.y;
+                if (evt.getX() > xOrigen) {
+                    circulo.width = evt.getX() - circulo.x;
+                } else {
+                    circulo.x = evt.getX();
+                    circulo.width = xOrigen - circulo.x;
+                }
+                if (evt.getY() > yOrigen) {
+                    circulo.height = evt.getY() - yOrigen;
+                } else {
+                    circulo.y = evt.getY();
+                    circulo.height = yOrigen - circulo.y;
+                }
                 g2.draw(circulo);
                 break;
             case 6:
-                rectangulo.width = evt.getX() - rectangulo.x;
-                rectangulo.height = evt.getY() - rectangulo.y;
-                g2.draw(rectangulo);
-                break;
+                dibujarRectangulo(evt, g2);
         }
 
     }//GEN-LAST:event_jPanel1MouseDragged
@@ -340,31 +374,21 @@ public class Ventana extends javax.swing.JFrame {
         Graphics2D g2 = (Graphics2D) buffer.getGraphics();
         switch (opcion) {
             case 1:
-                circulo.width = evt.getX() - circulo.x;
-                circulo.height = evt.getX() - circulo.x;
                 g2.draw(circulo);
                 break;
             case 2:
-                rectangulo.width = evt.getX() - rectangulo.x;
-                rectangulo.height = evt.getX() - rectangulo.x;
                 g2.draw(rectangulo);
                 break;
             case 3:
-                linea.x2 = evt.getX();
-                linea.y2 = evt.getY();
                 g2.draw(linea);
                 break;
             case 4:
                 g2.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
                 break;
             case 5:
-                circulo.width = evt.getX() - circulo.x;
-                circulo.height = evt.getY() - circulo.y;
                 g2.draw(circulo);
                 break;
             case 6:
-                rectangulo.width = evt.getX() - rectangulo.x;
-                rectangulo.height = evt.getY() - rectangulo.y;
                 g2.draw(rectangulo);
                 break;
         }
@@ -456,4 +480,20 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSlider jSlider1;
     // End of variables declaration//GEN-END:variables
+
+    private void dibujarRectangulo(java.awt.event.MouseEvent evt, Graphics2D g2) {
+        if (evt.getX() > xOrigen) {
+            rectangulo.width = evt.getX() - rectangulo.x;
+        } else {
+            rectangulo.x = evt.getX();
+            rectangulo.width = xOrigen - rectangulo.x;
+        }
+        if (evt.getY() > yOrigen) {
+            rectangulo.height = evt.getY() - yOrigen;
+        } else {
+            rectangulo.y = evt.getY();
+            rectangulo.height = yOrigen - rectangulo.y;
+        }
+        g2.draw(rectangulo);
+    }
 }
