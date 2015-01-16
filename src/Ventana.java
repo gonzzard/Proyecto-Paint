@@ -39,6 +39,7 @@ public class Ventana extends javax.swing.JFrame {
     private Line2D.Double linea = new Line2D.Double();
     private Ellipse2D.Double circulo = new Ellipse2D.Double();
     private Rectangle2D.Double rectangulo = new Rectangle2D.Double();
+    private Color colorSeleccionado;
     private ArrayList<Shape> objetos = new ArrayList<Shape>();
 
     /**
@@ -55,6 +56,7 @@ public class Ventana extends javax.swing.JFrame {
      * Creates new form Ventana
      */
     public Ventana() {
+        colorSeleccionado = new Color(Color.BLACK.getRGB());
         initComponents();
         int ancho = jPanel1.getWidth();
         int alto = jPanel1.getHeight();
@@ -86,6 +88,9 @@ public class Ventana extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
         jButton8 = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
 
         jDialog1.setResizable(false);
         jDialog1.setSize(new java.awt.Dimension(800, 600));
@@ -108,7 +113,6 @@ public class Ventana extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
         setResizable(false);
 
         jPanel1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -184,7 +188,10 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        jSlider1.setMaximum(5);
+        jSlider1.setMinimum(1);
         jSlider1.setPaintLabels(true);
+        jSlider1.setValue(1);
 
         jButton8.setText("Colores");
         jButton8.setToolTipText("Colores");
@@ -193,6 +200,14 @@ public class Ventana extends javax.swing.JFrame {
                 jButton8MousePressed(evt);
             }
         });
+
+        jMenu1.setText("File");
+        jMenuBar1.add(jMenu1);
+
+        jMenu2.setText("Edit");
+        jMenuBar1.add(jMenu2);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -212,10 +227,10 @@ public class Ventana extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
-                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton8)
-                .addGap(0, 135, Short.MAX_VALUE))
+                .addGap(0, 225, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -224,7 +239,7 @@ public class Ventana extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton1)
@@ -477,6 +492,9 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JDialog jDialog1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JSlider jSlider1;
     // End of variables declaration//GEN-END:variables
