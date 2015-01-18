@@ -7,18 +7,17 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import java.util.ArrayList;
-import static javafx.scene.Cursor.cursor;
 import javax.swing.ImageIcon;
+
+
 
 
 /*
@@ -51,19 +50,16 @@ public class Ventana extends javax.swing.JFrame {
     int opcion = 3;
     int x1, x2, y1, y2;
     double xOrigen, yOrigen;
-    Image img = Toolkit.getDefaultToolkit().createImage("/Users/Gonzalo/NetBeansProjects/Paint/src/icons/pencil54.png");
-    Cursor cur = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(2, 14), "img");
+    Image img = Toolkit.getDefaultToolkit().createImage("src/icons/create3.png");
+    Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(1, 1), "img");
     Graphics2D g4;
-
     Graphics2D g2;
 
     /**
      * Creates new form Ventana
      */
     public Ventana() {
-
-        this.setCursor(cur);
-
+        this.setCursor(cursor);
         colorSeleccionado = new Color(Color.BLACK.getRGB());
         initComponents();
         int ancho = jPanel1.getWidth();
@@ -102,7 +98,6 @@ public class Ventana extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         jDialog1.setResizable(false);
-        jDialog1.setSize(new java.awt.Dimension(800, 600));
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -154,14 +149,13 @@ public class Ventana extends javax.swing.JFrame {
         jButton1.setMaximumSize(new java.awt.Dimension(64, 64));
         jButton1.setMinimumSize(new java.awt.Dimension(64, 64));
         jButton1.setPreferredSize(new java.awt.Dimension(64, 64));
-        jButton1.setSize(new java.awt.Dimension(64, 64));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jButton1MousePressed(evt);
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pencil54.png"))); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/painting42.png"))); // NOI18N
         jButton2.setToolTipText("Cuadrado");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -169,7 +163,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pencil54 copia.png"))); // NOI18N
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/lapiz.png"))); // NOI18N
         jButton3.setToolTipText("Línea");
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -237,8 +231,8 @@ public class Ventana extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,7 +256,7 @@ public class Ventana extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton2)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton3)
                             .addComponent(jButton4)
                             .addComponent(jButton5)
                             .addComponent(jButton6))
