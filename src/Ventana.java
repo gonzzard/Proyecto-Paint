@@ -1,7 +1,7 @@
 
-import com.sun.glass.ui.Cursor;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -51,21 +51,30 @@ public class Ventana extends javax.swing.JFrame {
     int opcion = 3;
     int x1, x2, y1, y2;
     double xOrigen, yOrigen;
+    Image img = Toolkit.getDefaultToolkit().createImage("/Users/Gonzalo/NetBeansProjects/Paint/src/icons/pencil54.png");
+    Cursor cur = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(2, 14), "img");
+    Graphics2D g4;
+
+    Graphics2D g2;
 
     /**
      * Creates new form Ventana
      */
     public Ventana() {
+
+        this.setCursor(cur);
+
         colorSeleccionado = new Color(Color.BLACK.getRGB());
         initComponents();
         int ancho = jPanel1.getWidth();
         int alto = jPanel1.getHeight();
         objetos.add(circulo);
         buffer = (BufferedImage) jPanel1.createImage(ancho, alto);
-        Graphics2D g2 = buffer.createGraphics();
-        g2.setColor(Color.white);
-        g2.fillRect(0, 0, ancho, alto);
-
+        Graphics2D g3 = buffer.createGraphics();
+        g3.setColor(Color.white);
+        g3.fillRect(0, 0, ancho, alto);
+        g2 = (Graphics2D) jPanel1.getGraphics();
+        g4 = (Graphics2D) buffer.getGraphics();
     }
 
     /**
@@ -140,15 +149,19 @@ public class Ventana extends javax.swing.JFrame {
             .addGap(0, 533, Short.MAX_VALUE)
         );
 
-        jButton1.setText("O");
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circle102.png"))); // NOI18N
         jButton1.setToolTipText("Círculo");
+        jButton1.setMaximumSize(new java.awt.Dimension(64, 64));
+        jButton1.setMinimumSize(new java.awt.Dimension(64, 64));
+        jButton1.setPreferredSize(new java.awt.Dimension(64, 64));
+        jButton1.setSize(new java.awt.Dimension(64, 64));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jButton1MousePressed(evt);
             }
         });
 
-        jButton2.setText("D");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pencil54.png"))); // NOI18N
         jButton2.setToolTipText("Cuadrado");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -156,7 +169,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("l");
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/pencil54 copia.png"))); // NOI18N
         jButton3.setToolTipText("Línea");
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -192,6 +205,11 @@ public class Ventana extends javax.swing.JFrame {
         jSlider1.setMinimum(1);
         jSlider1.setPaintLabels(true);
         jSlider1.setValue(1);
+        jSlider1.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                jSlider1MouseDragged(evt);
+            }
+        });
 
         jButton8.setText("Colores");
         jButton8.setToolTipText("Colores");
@@ -230,7 +248,7 @@ public class Ventana extends javax.swing.JFrame {
                 .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton8)
-                .addGap(0, 225, Short.MAX_VALUE))
+                .addGap(0, 231, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -241,16 +259,19 @@ public class Ventana extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton2)
-                        .addComponent(jButton3)
-                        .addComponent(jButton4)
-                        .addComponent(jButton5)
-                        .addComponent(jButton6))
-                    .addComponent(jSlider1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton8, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton4)
+                            .addComponent(jButton5)
+                            .addComponent(jButton6))
+                        .addComponent(jSlider1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton8, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(42, 42, 42)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -306,7 +327,7 @@ public class Ventana extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel1MousePressed
 
     private void jPanel1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseDragged
-        Graphics2D g2 = (Graphics2D) jPanel1.getGraphics();
+
         g2.drawImage(buffer, 0, 0, null);
         switch (opcion) {
             case 1:
@@ -334,13 +355,16 @@ public class Ventana extends javax.swing.JFrame {
                 break;
             case 2:
                 double distancia = xOrigen - evt.getX();
-                if (distancia < 0 )
+                if (distancia < 0) {
                     distancia = evt.getX() - xOrigen;
+                }
                 double yDistancia = yOrigen - evt.getY();
-                if (yDistancia < 0 )
+                if (yDistancia < 0) {
                     yDistancia = evt.getY() - yOrigen;
-                if (distancia < yDistancia)
+                }
+                if (distancia < yDistancia) {
                     distancia = yDistancia;
+                }
                 rectangulo.x = xOrigen - distancia;
                 rectangulo.y = yOrigen - distancia;
                 rectangulo.width = distancia * 2;
@@ -354,11 +378,10 @@ public class Ventana extends javax.swing.JFrame {
                 break;
             case 4:
                 Graphics2D g3 = (Graphics2D) buffer.getGraphics();
-                g3.setStroke(new BasicStroke(jSlider1.getValue()));
                 x2 = evt.getX();
                 y2 = evt.getY();
                 if (x1 != x2 || y1 != y2) {
-                    g3.drawLine(x1, y1, x2, y2);
+                    g4.drawLine(x1, y1, x2, y2);
                     x1 = x2;
                     y1 = y2;
                 }
@@ -386,29 +409,29 @@ public class Ventana extends javax.swing.JFrame {
 
     private void jPanel1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel1MouseReleased
         //buffer
-        Graphics2D g2 = (Graphics2D) buffer.getGraphics();
+
         switch (opcion) {
             case 1:
-                g2.draw(circulo);
+                g4.draw(circulo);
                 break;
             case 2:
-                g2.draw(rectangulo);
+                g4.draw(rectangulo);
                 break;
             case 3:
-                g2.draw(linea);
+                g4.draw(linea);
                 break;
             case 4:
-                g2.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
+                g4.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
                 break;
             case 5:
-                g2.draw(circulo);
+                g4.draw(circulo);
                 break;
             case 6:
-                g2.draw(rectangulo);
+                g4.draw(rectangulo);
                 break;
         }
         //panel
-        g2 = (Graphics2D) jPanel1.getGraphics();
+       //      g2 = (Graphics2D) jPanel1.getGraphics();
         g2.drawImage(buffer, 0, 0, null);
     }//GEN-LAST:event_jPanel1MouseReleased
 
@@ -439,6 +462,11 @@ public class Ventana extends javax.swing.JFrame {
     private void jButton8MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MousePressed
         jDialog1.setVisible(true);
     }//GEN-LAST:event_jButton8MousePressed
+
+    private void jSlider1MouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jSlider1MouseDragged
+        g4.setStroke(new BasicStroke(jSlider1.getValue()));
+        g2.setStroke(new BasicStroke(jSlider1.getValue()));
+    }//GEN-LAST:event_jSlider1MouseDragged
 
     @Override
     public void paint(Graphics g) {
