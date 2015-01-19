@@ -4,10 +4,16 @@
   <NonVisualComponents>
     <Container class="javax.swing.JDialog" name="jDialog1">
       <Properties>
-        <Property name="resizable" type="boolean" value="false"/>
-        <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[710, 450]"/>
         </Property>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[710, 450]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[710, 450]"/>
+        </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
       <Layout>
@@ -225,7 +231,7 @@
     <Component class="javax.swing.JButton" name="jButton1">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icons/gorda 1.png"/>
+          <Image iconType="3" name="/icons/circulo.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="C&#xed;rculo"/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -245,7 +251,7 @@
     <Component class="javax.swing.JButton" name="jButton2">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icons/gorda 2.png"/>
+          <Image iconType="3" name="/icons/cuadrado.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Cuadrado"/>
       </Properties>
@@ -256,7 +262,7 @@
     <Component class="javax.swing.JButton" name="jButton3">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icons/gorda 42.png"/>
+          <Image iconType="3" name="/icons/linea.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="L&#xed;nea"/>
       </Properties>
@@ -278,7 +284,7 @@
     <Component class="javax.swing.JButton" name="jButton5">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/icons/gorda 3.png"/>
+          <Image iconType="3" name="/icons/elipse.png"/>
         </Property>
         <Property name="toolTipText" type="java.lang.String" value="Elipse"/>
       </Properties>

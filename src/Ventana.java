@@ -129,8 +129,10 @@ public class Ventana extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
+        jDialog1.setMaximumSize(new java.awt.Dimension(710, 450));
+        jDialog1.setMinimumSize(new java.awt.Dimension(710, 450));
+        jDialog1.setPreferredSize(new java.awt.Dimension(710, 450));
         jDialog1.setResizable(false);
-        jDialog1.setSize(new java.awt.Dimension(710, 450));
 
         jButton7.setText("aceptar");
         jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -226,7 +228,7 @@ public class Ventana extends javax.swing.JFrame {
             .addGap(0, 564, Short.MAX_VALUE)
         );
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gorda 1.png"))); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/circulo.png"))); // NOI18N
         jButton1.setToolTipText("Círculo");
         jButton1.setMaximumSize(new java.awt.Dimension(64, 64));
         jButton1.setMinimumSize(new java.awt.Dimension(64, 64));
@@ -237,7 +239,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gorda 2.png"))); // NOI18N
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/cuadrado.png"))); // NOI18N
         jButton2.setToolTipText("Cuadrado");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -245,7 +247,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gorda 42.png"))); // NOI18N
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/linea.png"))); // NOI18N
         jButton3.setToolTipText("Línea");
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
@@ -261,7 +263,7 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/gorda 3.png"))); // NOI18N
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/elipse.png"))); // NOI18N
         jButton5.setToolTipText("Elipse");
         jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
