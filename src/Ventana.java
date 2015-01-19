@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
@@ -14,7 +13,6 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-import java.util.ArrayList;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -22,20 +20,20 @@ import java.util.ArrayList;
  * and open the template in the editor.
  */
 /**
- *
  * @author Gonzalo, David
  */
 public class Ventana extends javax.swing.JFrame {
 
     // Buffer
-    private BufferedImage buffer = null;
+    private BufferedImage buffer;
 
     // Formas
-    private Line2D.Double linea = new Line2D.Double();
-    private Ellipse2D.Double circulo = new Ellipse2D.Double();
-    private Rectangle2D.Double rectangulo = new Rectangle2D.Double();
+    private Line2D.Double linea;
+    private Ellipse2D.Double circulo;
+    private Rectangle2D.Double rectangulo;
+
+    // Color
     private Color colorSeleccionado;
-    private ArrayList<Shape> objetos = new ArrayList<Shape>();
 
     /**
      * Variable para las opciones:
@@ -43,24 +41,43 @@ public class Ventana extends javax.swing.JFrame {
      * Opcion 1: Circulo, Opcion 2: Cuadrado, Opcion 3: Linea, Opcion 4: Libre,
      * Opcion 5: Elipse, Opcion 6: Rectangulo
      */
-    int opcion = 3;
-    int x1, x2, y1, y2;
-    double xOrigen, yOrigen;
-    Image img = Toolkit.getDefaultToolkit().createImage("src/icons/lapiz.png");
-    Cursor cursor = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(3, 26), "img");
-    Graphics2D g4;
-    Graphics2D g2;
+    private int opcion;
+    private int x1;
+    private int x2;
+    private int y1;
+    private int y2;
+    private int alto;
+    private int ancho;
+    private double xOrigen;
+    private double yOrigen;
+
+    // Cursor
+    private Image img;
+    private Cursor cursorLapiz;
+    private Graphics2D g4;
+    private Graphics2D g2;
 
     /**
      * Creates new form Ventana
      */
     public Ventana() {
-        
+        // Inicializacion buffer
+        buffer = null;
+
+        // Inicializaion formas
+        linea = new Line2D.Double();
+        circulo = new Ellipse2D.Double();
+        rectangulo = new Rectangle2D.Double();
+
+        // Iniciacilazion color
         colorSeleccionado = new Color(Color.BLACK.getRGB());
+
+        img = Toolkit.getDefaultToolkit().createImage("src/icons/lapiz.png");
+        cursorLapiz = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(3, 26), "img");
         initComponents();
-        int ancho = jPanel1.getWidth();
-        int alto = jPanel1.getHeight();
-        objetos.add(circulo);
+        ancho = jPanel1.getWidth();
+        alto = jPanel1.getHeight();
+        opcion = 3;
         buffer = (BufferedImage) jPanel1.createImage(ancho, alto);
         Graphics2D g3 = buffer.createGraphics();
         g3.setColor(Color.white);
@@ -96,11 +113,21 @@ public class Ventana extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
 
         jDialog1.setResizable(false);
-        jDialog1.setSize(new java.awt.Dimension(710, 435));
+        jDialog1.setSize(new java.awt.Dimension(710, 450));
 
-        jButton7.setText("jButton7");
+        jButton7.setText("aceptar");
+        jButton7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton7MouseClicked(evt);
+            }
+        });
 
-        jButton9.setText("jButton9");
+        jButton9.setText("cancelar");
+        jButton9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jButton9MousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -112,7 +139,7 @@ public class Ventana extends javax.swing.JFrame {
                         .addContainerGap()
                         .addComponent(jColorChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 698, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jDialog1Layout.createSequentialGroup()
-                        .addGap(235, 235, 235)
+                        .addGap(251, 251, 251)
                         .addComponent(jButton7)
                         .addGap(18, 18, 18)
                         .addComponent(jButton9)))
@@ -127,7 +154,7 @@ public class Ventana extends javax.swing.JFrame {
                 .addGroup(jDialog1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
                     .addComponent(jButton9))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -297,10 +324,11 @@ public class Ventana extends javax.swing.JFrame {
         switch (opcion) {
             // Circulo
             case 1:
+                
                 // Esquina superior izq circulo
                 circulo.x = evt.getX();
                 circulo.y = evt.getY();
-                //centro
+                // Centro del circulo
                 xOrigen = circulo.x;
                 yOrigen = circulo.y;
                 break;
@@ -468,7 +496,7 @@ public class Ventana extends javax.swing.JFrame {
 
     private void jButton4MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MousePressed
         opcion = 4;
-        setCursor(cursor);
+        setCursor(cursorLapiz);
     }//GEN-LAST:event_jButton4MousePressed
 
     private void jButton6MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MousePressed
@@ -483,6 +511,16 @@ public class Ventana extends javax.swing.JFrame {
         g4.setStroke(new BasicStroke(jSlider1.getValue()));
         g2.setStroke(new BasicStroke(jSlider1.getValue()));
     }//GEN-LAST:event_jSlider1MouseDragged
+
+    private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
+        colorSeleccionado = jColorChooser1.getColor();
+     g2.setPaint(colorSeleccionado);
+        jDialog1.setVisible(false);
+    }//GEN-LAST:event_jButton7MouseClicked
+
+    private void jButton9MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MousePressed
+        jDialog1.setVisible(false);
+    }//GEN-LAST:event_jButton9MousePressed
 
     @Override
     public void paint(Graphics g) {
