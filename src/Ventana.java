@@ -185,9 +185,6 @@ public class Ventana extends javax.swing.JFrame {
         botonColoresCancelar = new javax.swing.JButton();
         dialogFichero = new javax.swing.JDialog();
         selectorFicheros = new javax.swing.JFileChooser();
-        dialogParche = new javax.swing.JDialog();
-        parcheTexto = new javax.swing.JLabel();
-        parcheFotoAvatar = new javax.swing.JLabel();
         panelLienzo = new javax.swing.JPanel();
         botonCirculo = new javax.swing.JButton();
         botonCuadrado = new javax.swing.JButton();
@@ -282,19 +279,6 @@ public class Ventana extends javax.swing.JFrame {
                 .addComponent(selectorFicheros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        dialogParche.setMinimumSize(new java.awt.Dimension(405, 550));
-        dialogParche.setModal(true);
-        dialogParche.setResizable(false);
-        dialogParche.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        parcheTexto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        parcheTexto.setText("<html>v0.2:<br><br> *Añadidos todos los tooltips a los botones principales.<br>*Arreglado bug cuando entrabas a la aplicación automáticamente empezabas a dibujar segmentos.<br>*Añadidos botón de nuevo y borrador.<br>*Cambiados los nombres de las variables para una lectura más cómoda.</html>");
-        dialogParche.getContentPane().add(parcheTexto, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 330, 380, 200));
-
-        parcheFotoAvatar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        parcheFotoAvatar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/avatar.png"))); // NOI18N
-        dialogParche.getContentPane().add(parcheFotoAvatar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 380, -1));
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Paint v0.3");
@@ -874,7 +858,7 @@ public class Ventana extends javax.swing.JFrame {
      *
      */
     private void menuAyudaParcheMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAyudaParcheMousePressed
-        dialogParche.setVisible(true);
+       // dialogParche.setVisible(true);
     }//GEN-LAST:event_menuAyudaParcheMousePressed
     /**
      *
@@ -975,7 +959,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton botonTexto;
     private javax.swing.JDialog dialogColores;
     private javax.swing.JDialog dialogFichero;
-    private javax.swing.JDialog dialogParche;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenuItem menuArchivoAbrir;
@@ -990,8 +973,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuEditarRehacer;
     private javax.swing.JMenuBar menuSuperior;
     private javax.swing.JPanel panelLienzo;
-    private javax.swing.JLabel parcheFotoAvatar;
-    private javax.swing.JLabel parcheTexto;
     private javax.swing.JFileChooser selectorFicheros;
     private javax.swing.JSeparator separador1;
     private javax.swing.JSeparator separador2;
