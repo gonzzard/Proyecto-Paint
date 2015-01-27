@@ -1,7 +1,9 @@
 
 import formas.Circulo;
 import formas.Cuadrado;
+import formas.DibujoLibre;
 import formas.Elipse;
+import formas.Herramienta;
 import formas.Linea;
 import formas.Rectangulo;
 import java.awt.BasicStroke;
@@ -11,6 +13,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -18,6 +21,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -34,27 +38,7 @@ public class Ventana extends javax.swing.JFrame {
     /**
      * Objeto de tipo <code>BufferImage</code> que almacena el buffer.
      */
-    private BufferedImage bufferActual;
-    /**
-     *
-     */
-    Elipse elipse;
-    /**
-     *
-     */
-    Circulo circulo;
-    /**
-     *
-     */
-    Rectangulo rectangulo;
-    /**
-     *
-     */
-    Cuadrado cuadrado;
-    /**
-     *
-     */
-    Linea linea;
+    private BufferedImage bufferPanel, vacio;
     /**
      * Objeto genérico de tipo <code>Color</code> que se empleará para almacenar
      * el color seleccionado para el trazo.
@@ -68,22 +52,6 @@ public class Ventana extends javax.swing.JFrame {
      * 4: Libre<br> -Opcion 5: Elipse<br> -Opcion 6: Rectangulo.
      */
     private int opcion;
-    /**
-     *
-     */
-    private int x1;
-    /**
-     *
-     */
-    private int x2;
-    /**
-     *
-     */
-    private int y1;
-    /**
-     *
-     */
-    private int y2;
     /**
      *
      */
@@ -111,35 +79,28 @@ public class Ventana extends javax.swing.JFrame {
     /**
      *
      */
-    private Graphics2D g4;
+    private Graphics2D graficaBuffer;
     /**
      *
      */
-    private Graphics2D g2;
+    private Graphics2D graficaPanel;
     /**
      *
      */
-    private ArrayList<BufferedImage> buffers;
+    private ArrayList<Herramienta> elementosDibujados;
 
     /**
      * Constructor de la ventana
      */
     JLabel texto = new JLabel();
-
+    Herramienta herramientaActual;
 
     public Ventana() {
 
-        // Componentes
+        /* Componentes */
         initComponents();
 
-        // Formas
-        elipse = new Elipse();
-        circulo = new Circulo();
-        rectangulo = new Rectangulo();
-        cuadrado = new Cuadrado();
-        linea = new Linea();
-
-        // Variables
+        /* Variables */
         ancho = panelLienzo.getWidth();
         alto = panelLienzo.getHeight();
         opcion = 4;
@@ -147,15 +108,14 @@ public class Ventana extends javax.swing.JFrame {
         actual = 0;
 
         // Inicializacion buffer
-        bufferActual = (BufferedImage) panelLienzo.createImage(ancho, alto);
-
-        Graphics2D g3 = bufferActual.createGraphics();
+        bufferPanel = (BufferedImage) panelLienzo.createImage(ancho, alto);
+        vacio = copiarBuffer(bufferPanel);
+        Graphics2D g = (Graphics2D) vacio.getGraphics();
+        Graphics2D g3 = bufferPanel.createGraphics();
         g3.setColor(Color.white);
         g3.fillRect(0, 0, ancho, alto);
-        g2 = (Graphics2D) panelLienzo.getGraphics();
-        //g4 = (Graphics2D) buffer.getGraphics();
-        g4 = (Graphics2D) bufferActual.getGraphics();
-        // Inicializaion formas
+        graficaPanel = (Graphics2D) panelLienzo.getGraphics();
+        graficaBuffer = (Graphics2D) bufferPanel.getGraphics();
 
         // Iniciacilazion color
         colorSeleccionado = new Color(Color.BLACK.getRGB());
@@ -163,10 +123,8 @@ public class Ventana extends javax.swing.JFrame {
         // Cursor
         img = Toolkit.getDefaultToolkit().createImage("src/icons/lapiz.png");
         cursorLapiz = Toolkit.getDefaultToolkit().createCustomCursor(img, new Point(3, 26), "img");
-// primer buffer vacio
-        buffers = new ArrayList<BufferedImage>();
-        buffers.add(copiarBuffer(bufferActual));
-
+        // primer buffer vacio
+        elementosDibujados = new ArrayList<>();
 
     }
 
@@ -197,22 +155,16 @@ public class Ventana extends javax.swing.JFrame {
         botonElipse = new javax.swing.JButton();
         botonRectangulo = new javax.swing.JButton();
         panelLienzo = new javax.swing.JPanel();
-        canvas1 = new java.awt.Canvas();
         anchoTrazo = new javax.swing.JSlider();
         botonPaletaColores = new javax.swing.JButton();
         botonRehacer = new javax.swing.JButton();
         botonDeshacer = new javax.swing.JButton();
         botonGuardar = new javax.swing.JButton();
         botonAbrir = new javax.swing.JButton();
-        separador1 = new javax.swing.JSeparator();
         botonTexto = new javax.swing.JButton();
-        separador2 = new javax.swing.JSeparator();
         botonBorrar = new javax.swing.JButton();
         botonNuevo = new javax.swing.JButton();
-        jToolBar1 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        jLabel2 = new javax.swing.JLabel();
         menuSuperior = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
         menuArchivoNuevo = new javax.swing.JMenuItem();
@@ -397,22 +349,25 @@ public class Ventana extends javax.swing.JFrame {
         });
 
         panelLienzo.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelLienzoMouseMoved(evt);
+            }
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 panelLienzoMouseDragged(evt);
             }
         });
         panelLienzo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                panelLienzoMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                panelLienzoMouseExited(evt);
-            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 panelLienzoMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 panelLienzoMouseReleased(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                panelLienzoMouseExited(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                panelLienzoMouseEntered(evt);
             }
         });
 
@@ -486,8 +441,6 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
-        separador1.setOrientation(javax.swing.SwingConstants.VERTICAL);
-
         botonTexto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/letra.png"))); // NOI18N
         botonTexto.setToolTipText("Texto");
         botonTexto.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -495,8 +448,6 @@ public class Ventana extends javax.swing.JFrame {
                 botonTextoMousePressed(evt);
             }
         });
-
-        separador2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         botonBorrar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/borrar.png"))); // NOI18N
         botonBorrar.setToolTipText("Goma de borrar");
@@ -510,28 +461,32 @@ public class Ventana extends javax.swing.JFrame {
         botonNuevo.setToolTipText("Nuevo");
         botonNuevo.setEnabled(false);
 
-        jToolBar1.setFloatable(false);
-
-        jLabel1.setText("jLabel1");
-        jToolBar1.add(jLabel1);
-        jToolBar1.add(jSeparator2);
-
-        jLabel2.setText("jLabel1");
-        jToolBar1.add(jLabel2);
+        jLabel1.setText("X:000, Y:000");
 
         menuArchivo.setText("Archivo");
 
         menuArchivoNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/nuevo.png"))); // NOI18N
         menuArchivoNuevo.setText("Nuevo");
+        menuArchivoNuevo.setEnabled(false);
         menuArchivo.add(menuArchivoNuevo);
 
         menuArchivoAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/abrir.png"))); // NOI18N
         menuArchivoAbrir.setText("Abrir");
         menuArchivoAbrir.setToolTipText("");
+        menuArchivoAbrir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                menuArchivoAbrirMousePressed(evt);
+            }
+        });
         menuArchivo.add(menuArchivoAbrir);
 
         menuArchivoGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/guardar.png"))); // NOI18N
         menuArchivoGuardar.setText("Guardar");
+        menuArchivoGuardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                menuArchivoGuardarMousePressed(evt);
+            }
+        });
         menuArchivo.add(menuArchivoGuardar);
 
         menuSuperior.add(menuArchivo);
@@ -541,15 +496,30 @@ public class Ventana extends javax.swing.JFrame {
 
         menuEditarDeshacer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/deshacer.png"))); // NOI18N
         menuEditarDeshacer.setText("Deshacer");
+        menuEditarDeshacer.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                menuEditarDeshacerMousePressed(evt);
+            }
+        });
         menuEditar.add(menuEditarDeshacer);
 
         menuEditarRehacer.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/rehacer.png"))); // NOI18N
         menuEditarRehacer.setText("Rehacer");
+        menuEditarRehacer.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                menuEditarRehacerMousePressed(evt);
+            }
+        });
         menuEditar.add(menuEditarRehacer);
         menuEditar.add(separador3);
 
         menuEditarColores.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icons/colores.png"))); // NOI18N
         menuEditarColores.setText("Colores");
+        menuEditarColores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                menuEditarColoresMousePressed(evt);
+            }
+        });
         menuEditar.add(menuEditarColores);
 
         menuSuperior.add(menuEditar);
@@ -577,68 +547,51 @@ public class Ventana extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(botonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(botonElipse, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonRectangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(botonDeshacer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonRehacer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(botonCirculo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonCuadrado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(botonLinea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(botonLapiz, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(anchoTrazo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(97, 97, 97)
-                                .addComponent(separador1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(605, 605, 605)
-                                .addComponent(separador2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(botonElipse, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(botonPaletaColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(panelLienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(12, Short.MAX_VALUE))))
+                                .addComponent(botonRectangulo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(botonDeshacer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(botonRehacer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(botonCirculo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(botonCuadrado, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(botonLinea, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(botonTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(botonLapiz, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(anchoTrazo, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(botonAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(botonPaletaColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(panelLienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(separador1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(separador2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(botonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(botonPaletaColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelLienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(botonRehacer, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -660,153 +613,51 @@ public class Ventana extends javax.swing.JFrame {
                             .addComponent(botonLapiz, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(botonBorrar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(anchoTrazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(panelLienzo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(anchoTrazo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botonNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botonAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botonGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(botonPaletaColores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)))
+                .addContainerGap(96, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-/**
+    /**
      *
      */
     private void panelLienzoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMousePressed
-        //bufferActual = copiarBuffer(buffers.get(actual)); 
-        //g4 = (Graphics2D) bufferActual.getGraphics();
-        //g4.drawImage(bufferActual, 0, 0, null);
-        System.out.println("ACTUAL: " + actual + " TAM " + buffers.size());
-        if (actual != buffers.size() - 1) {
-            //bufferActual = copiarBuffer(buffers.get(actual)); 
-            //g4 = (Graphics2D) bufferActual.getGraphics();
-            //int nums = buffers.size()-1;
-            for (int i = buffers.size() - 1; i > actual; i--) {
-                buffers.remove(i);
-                System.out.println("BORRADO- POS: " + i + "TAMAÑO = " + buffers.size() + 1);
-            }
-            //bufferActual = copiarBuffer(buffers.get(actual));
-            //g4 = (Graphics2D) bufferActual.getGraphics();
-            //actual = buffers.size()-1;
-            //g4.drawImage(bufferActual, 0, 0, null);
-            //buffers.add(copiarBuffer(buffers.get(actual)));      
+        System.out.println(elementosDibujados.size() - actual);
+        botonRehacer.setEnabled(false);
+        for (int i = elementosDibujados.size() - 1; i >= actual; i--) {
+            elementosDibujados.remove(i);
         }
-        // actual++;
+        System.out.println(elementosDibujados.toString());
         botonDeshacer.setEnabled(true);
-        // g4 = (Graphics2D) buffers.get(actual).getGraphics();
-        switch (opcion) {
-            // Circulo
-            case 1:
-                circulo.iniciar(evt);
-                break;
-            // Cuadrado  
-            case 2:
-                cuadrado.iniciar(evt);
-                break;
-            // Linea
-            case 3:
-                linea.iniciar(evt);
-                break;
-            // Libre
-            case 4:
-                x1 = evt.getX();
-                y1 = evt.getY();
-                break;
-            // Elipse
-            case 5:
-                elipse.iniciar(evt);
-                break;
-            // Rectangulo
-            case 6:
-                rectangulo.iniciar(evt);
-                break;
-            case 7:
-              
-                g2.drawString(texto.getText(),evt.getX(), evt.getY());
-                break;
-        }
+        this.pintarPressed(evt);
     }//GEN-LAST:event_panelLienzoMousePressed
     /**
      *
      */
     private void panelLienzoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMouseDragged
-        // pinto en el lienzo el buffer
-        //g2.drawImage(buffers.get(actual), 0, 0, null);
-        //g4 = (Graphics2D) bufferActual.getGraphics();
-        g2.drawImage(bufferActual, 0, 0, null);
-        switch (opcion) {
-            case 1:
-                circulo.reposicionar(evt, g2);
-                break;
-            case 2:
-                cuadrado.reposicionar(evt, g2);
-                break;
-            case 3:
-                linea.reposicionar(evt, g2);
-                break;
-            case 4:
-                x2 = evt.getX();
-                y2 = evt.getY();
-                if (x1 != x2 || y1 != y2) {
-                    g4.drawLine(x1, y1, x2, y2);
-                    x1 = x2;
-                    y1 = y2;
-                }
-                break;
-            case 5:
-                elipse.reposicionar(evt, g2);
-                break;
-            case 6:
-                rectangulo.reposicionar(evt, g2);
-            case 7:
-                  g2.drawString(texto.getText(),evt.getX(), evt.getY());
-                      
-                break;
-        }
-
+        this.pintarDragged(evt);
     }//GEN-LAST:event_panelLienzoMouseDragged
     /**
      *
      */
     private void panelLienzoMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMouseReleased
-        // dibujo en el bufer
-        //g4 = (Graphics2D) buffers.get(actual).getGraphics();
-        g4 = (Graphics2D) bufferActual.getGraphics();
-
-        //g4 =(Graphics2D) panelLienzo.getGraphics();
-        switch (opcion) {
-            case 1:
-                circulo.pintar(g4);
-                break;
-            case 2:
-                cuadrado.pintar(g4);
-                break;
-            case 3:
-                linea.pintar(g4);
-                break;
-            case 4:
-                g4.drawLine(evt.getX(), evt.getY(), evt.getX(), evt.getY());
-                break;
-            case 5:
-                elipse.pintar(g4);
-                break;
-            case 6:
-                rectangulo.pintar(g4);
-                break;
-            case 7:
-                g4.drawString(texto.getText(),evt.getX(), evt.getY());
-                 
-                break;
-        }
-        // actual++;
+        this.pintarReleased(evt);
         //vuelco en el lienzo
+        this.pintarTodosElementos();
+        elementosDibujados.add(herramientaActual);
         actual++;
-        buffers.add(copiarBuffer(bufferActual));
-        g2.drawImage(bufferActual, 0, 0, null);
-        System.out.println("ADICION- TAMAÑO: " + buffers.size() + "ACTUAL: " + actual);
-        System.out.println("=======================");
-//buffers.add(actual, buffer); 
-        //     g4.drawImage(buffers.get(actual), 0, 0, null);
-
+        graficaPanel.drawImage(bufferPanel, 0, 0, null);
     }//GEN-LAST:event_panelLienzoMouseReleased
     /**
      *
@@ -860,8 +711,8 @@ public class Ventana extends javax.swing.JFrame {
      *
      */
     private void anchoTrazoMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_anchoTrazoMouseDragged
-        g4.setStroke(new BasicStroke(anchoTrazo.getValue()));
-        g2.setStroke(new BasicStroke(anchoTrazo.getValue()));
+        graficaBuffer.setStroke(new BasicStroke(anchoTrazo.getValue()));
+        graficaPanel.setStroke(new BasicStroke(anchoTrazo.getValue()));
     }//GEN-LAST:event_anchoTrazoMouseDragged
     /**
      *
@@ -873,6 +724,7 @@ public class Ventana extends javax.swing.JFrame {
      *
      */
     private void panelLienzoMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMouseEntered
+        jLabel1.setVisible(true);
         if (selecCursor == 1) {
             setCursor(cursorLapiz);
         }
@@ -885,45 +737,29 @@ public class Ventana extends javax.swing.JFrame {
      */
     private void panelLienzoMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMouseExited
         setCursor(Cursor.DEFAULT_CURSOR);
+        jLabel1.setVisible(false);
     }//GEN-LAST:event_panelLienzoMouseExited
     /**
      *
      */
     private void botonColoresAceptarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonColoresAceptarMousePressed
         colorSeleccionado = jColorChooser1.getColor();
-        g2.setPaint(colorSeleccionado);
-        g4.setPaint(colorSeleccionado);
+        graficaPanel.setPaint(colorSeleccionado);
+        graficaBuffer.setPaint(colorSeleccionado);
         dialogColores.setVisible(false);
+
     }//GEN-LAST:event_botonColoresAceptarMousePressed
     /**
      *
      */
     private void botonGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonGuardarMousePressed
-        int seleccion = selectorFicheros.showSaveDialog(this);
-        selectorFicheros.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
-            File fichero = selectorFicheros.getSelectedFile();
-            try {
-                ImageIO.write(buffers.get(buffers.size() - 1), "png", selectorFicheros.getSelectedFile());
-            } catch (IOException ex) {
-                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        this.guardarArchivo();
     }//GEN-LAST:event_botonGuardarMousePressed
     /**
      *
      */
     private void botonAbrirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonAbrirMousePressed
-        int seleccion = selectorFicheros.showOpenDialog(this);
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
-            File fichero = selectorFicheros.getSelectedFile();
-            try {
-                BufferedImage imagen = ImageIO.read(fichero);
-                g4.drawImage(imagen, 0, 0, null);
-            } catch (IOException ex) {
-                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+        this.abrirArchivo();
     }//GEN-LAST:event_botonAbrirMousePressed
     /**
      *
@@ -941,55 +777,76 @@ public class Ventana extends javax.swing.JFrame {
      *
      */
     private void botonDeshacerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonDeshacerMousePressed
-        if (actual > 0) {
-            actual--;
-            bufferActual = copiarBuffer(buffers.get(actual));
-            //g4 = (Graphics2D) bufferActual.getGraphics();
-            //g4.drawImage(bufferActual, 0, 0, null);
-            g2.drawImage(bufferActual, 0, 0, null);
-            //repaint();
-            if (actual == 0) {
-                botonDeshacer.setEnabled(false);
-            }
-            botonRehacer.setEnabled(true);
+        if (botonDeshacer.isEnabled()) {
+            this.deshacer();
         }
     }//GEN-LAST:event_botonDeshacerMousePressed
     /**
      *
      */
     private void botonRehacerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonRehacerMousePressed
-        if (actual < buffers.size() - 1) {
-            actual++;
-            bufferActual = copiarBuffer(buffers.get(actual));
-            //g4 = (Graphics2D) bufferActual.getGraphics();
-            // g4.drawImage(bufferActual, 0, 0, null);
-            g2.drawImage(bufferActual, 0, 0, null);
-
-            //repaint();
-            if (actual == buffers.size() - 1) {
-                botonRehacer.setEnabled(false);
-            }
-            botonDeshacer.setEnabled(true);
+        if (botonRehacer.isEnabled()) {
+            this.rehacer();
         }
     }//GEN-LAST:event_botonRehacerMousePressed
-
+    /**
+     *
+     */
     private void jButton1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MousePressed
         texto = new JLabel();
         String texto1 = jTextField1.getText();
         texto.setText(texto1);
         dialogTexto.setVisible(false);
     }//GEN-LAST:event_jButton1MousePressed
-
+    /**
+     *
+     */
     private void botonTextoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_botonTextoMousePressed
-     opcion = 7;
-     dialogTexto.setVisible(true);
+        opcion = 7;
+        dialogTexto.setVisible(true);
     }//GEN-LAST:event_botonTextoMousePressed
+    /**
+     *
+     */
+    private void panelLienzoMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelLienzoMouseMoved
+        jLabel1.setText("X: " + evt.getX() + " Y: " + evt.getY());
+    }//GEN-LAST:event_panelLienzoMouseMoved
+    /**
+     *
+     */
+    private void menuEditarColoresMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuEditarColoresMousePressed
+        dialogColores.setVisible(true);
+    }//GEN-LAST:event_menuEditarColoresMousePressed
+    /**
+     *
+     */
+    private void menuEditarDeshacerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuEditarDeshacerMousePressed
+        this.deshacer();
+    }//GEN-LAST:event_menuEditarDeshacerMousePressed
+    /**
+     *
+     */
+    private void menuEditarRehacerMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuEditarRehacerMousePressed
+        this.rehacer();
+    }//GEN-LAST:event_menuEditarRehacerMousePressed
+    /**
+     *
+     */
+    private void menuArchivoAbrirMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuArchivoAbrirMousePressed
+        this.abrirArchivo();
+    }//GEN-LAST:event_menuArchivoAbrirMousePressed
+    /**
+     *
+     */
+    private void menuArchivoGuardarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuArchivoGuardarMousePressed
+        this.guardarArchivo();
+    }//GEN-LAST:event_menuArchivoGuardarMousePressed
 
     @Override
     public void paint(Graphics g) {
         super.paintComponents(g);
         // Graphics2D g2 = (Graphics2D) panelLienzo.getGraphics();
-        g2.drawImage(bufferActual, 0, 0, null);
+        graficaPanel.drawImage(bufferPanel, 0, 0, null);
         System.out.println("PINTADO");
     }
 
@@ -1009,19 +866,17 @@ public class Ventana extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
             public void run() {
                 new Ventana().setVisible(true);
             }
@@ -1046,7 +901,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton botonRectangulo;
     private javax.swing.JButton botonRehacer;
     private javax.swing.JButton botonTexto;
-    private java.awt.Canvas canvas1;
     private javax.swing.JDialog dialogColores;
     private javax.swing.JDialog dialogFichero;
     private javax.swing.JDialog dialogParche;
@@ -1055,10 +909,7 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JColorChooser jColorChooser1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenuItem menuArchivoAbrir;
     private javax.swing.JMenuItem menuArchivoGuardar;
@@ -1073,8 +924,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuSuperior;
     private javax.swing.JPanel panelLienzo;
     private javax.swing.JFileChooser selectorFicheros;
-    private javax.swing.JSeparator separador1;
-    private javax.swing.JSeparator separador2;
     private javax.swing.JPopupMenu.Separator separador3;
     private javax.swing.JPopupMenu.Separator separador4;
     // End of variables declaration//GEN-END:variables
@@ -1091,5 +940,143 @@ public class Ventana extends javax.swing.JFrame {
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = buffer.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+    }
+
+    public void deshacer() {
+        graficaBuffer.setColor(Color.white);
+        graficaBuffer.fillRect(0, 0, panelLienzo.getWidth(), panelLienzo.getHeight());
+        graficaBuffer.setColor(colorSeleccionado);
+        this.pintarElemenosMenosUno();
+    }
+
+    public void rehacer() {
+        graficaBuffer.setColor(Color.white);
+        graficaBuffer.fillRect(0, 0, panelLienzo.getWidth(), panelLienzo.getHeight());
+        graficaBuffer.setColor(colorSeleccionado);
+        this.pintarElemenosMasUno();
+    }
+
+    public void abrirArchivo() {
+        int seleccion = selectorFicheros.showOpenDialog(this);
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File fichero = selectorFicheros.getSelectedFile();
+            try {
+                BufferedImage imagen = ImageIO.read(fichero);
+                graficaBuffer.drawImage(imagen, 0, 0, null);
+            } catch (IOException ex) {
+                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+    }
+
+    public void guardarArchivo() {
+        int seleccion = selectorFicheros.showSaveDialog(this);
+        selectorFicheros.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+        if (seleccion == JFileChooser.APPROVE_OPTION) {
+            File fichero = selectorFicheros.getSelectedFile();
+            try {
+                ImageIO.write(bufferPanel, "png", selectorFicheros.getSelectedFile());
+            } catch (IOException ex) {
+                Logger.getLogger(Ventana.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    public void pintarPressed(java.awt.event.MouseEvent evt) {
+        switch (opcion) {
+            // Circulo
+            case 1:
+                herramientaActual = new Circulo();
+                break;
+            // Cuadrado  
+            case 2:
+                herramientaActual = new Cuadrado();
+                break;
+            // Linea
+            case 3:
+                herramientaActual = new Linea();
+                break;
+            // Libre
+            case 4:
+                herramientaActual = new DibujoLibre();
+                break;
+            // Elipse
+            case 5:
+                herramientaActual = new Elipse();
+                break;
+            // Rectangulo
+            case 6:
+                herramientaActual = new Rectangulo();
+                break;
+            case 7:
+                graficaPanel.drawString(texto.getText(), evt.getX(), evt.getY());
+                break;
+        }
+        herramientaActual.iniciar(evt);
+    }
+
+    public void pintarDragged(java.awt.event.MouseEvent evt) {
+        graficaPanel.drawImage(bufferPanel, 0, 0, null);
+        if (herramientaActual instanceof DibujoLibre) {
+            herramientaActual.reposicionar(evt, graficaBuffer);
+        } else {
+            herramientaActual.reposicionar(evt, graficaPanel);
+        }
+    }
+
+    public void pintarReleased(java.awt.event.MouseEvent evt) {
+        herramientaActual.pintar(graficaBuffer);
+    }
+
+    /**
+     *
+     */
+    public void pintarTodosElementos() {
+        Iterator iterador = elementosDibujados.iterator();
+        while (iterador.hasNext()) {
+            graficaBuffer.draw((Shape) iterador.next());
+        }
+    }
+
+    /**
+     *
+     */
+    public void pintarElemenosMenosUno() {
+        int elemActual = actual - 1;
+        for (int i = 0; i < elemActual; i++) {
+            if (elementosDibujados.get(i) instanceof DibujoLibre) {
+                elementosDibujados.get(i).pintar(graficaBuffer);
+            } else {
+
+                graficaBuffer.draw(elementosDibujados.get(i));
+            }
+        }
+        graficaPanel.drawImage(bufferPanel, 0, 0, null);
+        actual--;
+        if (elemActual == 0) {
+            botonDeshacer.setEnabled(false);
+        }
+        botonRehacer.setEnabled(true);
+    }
+
+    /**
+     *
+     */
+    public void pintarElemenosMasUno() {
+        int elemActual = actual + 1;
+        for (int i = 0; i < elemActual; i++) {
+            if (elementosDibujados.get(i) instanceof DibujoLibre) {
+                elementosDibujados.get(i).pintar(graficaBuffer);
+            } else {
+
+                graficaBuffer.draw(elementosDibujados.get(i));
+            }
+        }
+        graficaPanel.drawImage(bufferPanel, 0, 0, null);
+        actual++;
+        if (elemActual == elementosDibujados.size()) {
+            botonRehacer.setEnabled(false);
+        }
     }
 }

@@ -20,7 +20,7 @@ public class Circulo extends Elipse {
     }
 
     /**
-     * Método para mover la posición actual de la figura.
+     * Método para mover la posición actual del círculo.
      */
     @Override
     public void mover() {
@@ -44,6 +44,11 @@ public class Circulo extends Elipse {
         this.pintar(g2);
     }
 
+    /**
+     * Método para calcular el centro del círculo.
+     *
+     * @param evt Evento empleado para saber la posición actual del ratón.
+     */
     public void calcularRadio(java.awt.event.MouseEvent evt) {
         double radio, d1, d2;
         d1 = evt.getX() - xOrigen;

@@ -182,6 +182,7 @@
                   <Image iconType="3" name="/icons/nuevo.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Nuevo"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuArchivoAbrir">
@@ -192,6 +193,9 @@
                 <Property name="text" type="java.lang.String" value="Abrir"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menuArchivoAbrirMousePressed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuArchivoGuardar">
               <Properties>
@@ -200,6 +204,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menuArchivoGuardarMousePressed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -215,6 +222,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Deshacer"/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menuEditarDeshacerMousePressed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuEditarRehacer">
               <Properties>
@@ -223,6 +233,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Rehacer"/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menuEditarRehacerMousePressed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="separador3">
             </MenuItem>
@@ -233,6 +246,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Colores"/>
               </Properties>
+              <Events>
+                <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="menuEditarColoresMousePressed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -291,87 +307,65 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jToolBar1" min="-2" pref="198" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="botonNuevo" min="-2" pref="40" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Component id="botonAbrir" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="botonElipse" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="botonRectangulo" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="botonDeshacer" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="botonRehacer" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="botonCirculo" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="botonCuadrado" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="botonLinea" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="botonTexto" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="botonLapiz" min="-2" pref="32" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="botonBorrar" min="-2" pref="32" max="-2" attributes="0"/>
-                              </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="botonElipse" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="botonRectangulo" min="-2" pref="32" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="botonDeshacer" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="botonRehacer" min="-2" pref="32" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="botonCirculo" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="botonCuadrado" min="-2" pref="32" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="botonLinea" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="botonTexto" min="-2" pref="32" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="botonLapiz" min="-2" pref="32" max="-2" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="botonBorrar" min="-2" pref="32" max="-2" attributes="0"/>
                           </Group>
                           <Component id="anchoTrazo" min="-2" pref="82" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="botonGuardar" min="-2" pref="40" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="97" max="-2" attributes="0"/>
-                              <Component id="separador1" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="605" max="-2" attributes="0"/>
-                              <Component id="separador2" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
-                              <Component id="botonPaletaColores" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="botonAbrir" min="-2" max="-2" attributes="0"/>
+                                  <Component id="botonNuevo" min="-2" pref="40" max="-2" attributes="0"/>
+                                  <Component id="botonGuardar" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
+                                  <Component id="botonPaletaColores" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                          <Component id="panelLienzo" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="12" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
+              <Component id="panelLienzo" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="separador1" min="-2" pref="47" max="-2" attributes="0"/>
-                  <Component id="separador2" min="-2" pref="47" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="7" pref="7" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="botonNuevo" min="-2" pref="40" max="-2" attributes="0"/>
-                          <Component id="botonAbrir" min="-2" max="-2" attributes="0"/>
-                          <Component id="botonGuardar" min="-2" pref="40" max="-2" attributes="0"/>
-                          <Component id="botonPaletaColores" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="panelLienzo" min="-2" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="botonRehacer" min="-2" pref="32" max="-2" attributes="0"/>
@@ -399,11 +393,19 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="anchoTrazo" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="botonNuevo" min="-2" pref="40" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="botonAbrir" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="botonGuardar" min="-2" pref="40" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="botonPaletaColores" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="panelLienzo" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
+              <EmptySpace pref="96" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -486,11 +488,12 @@
     </Component>
     <Container class="javax.swing.JPanel" name="panelLienzo">
       <Events>
+        <EventHandler event="mouseMoved" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseMoved"/>
         <EventHandler event="mouseDragged" listener="java.awt.event.MouseMotionListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseDragged"/>
-        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseEntered"/>
-        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseExited"/>
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMousePressed"/>
         <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseReleased"/>
+        <EventHandler event="mouseExited" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseExited"/>
+        <EventHandler event="mouseEntered" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="panelLienzoMouseEntered"/>
       </Events>
 
       <Layout>
@@ -505,10 +508,6 @@
           </Group>
         </DimensionLayout>
       </Layout>
-      <SubComponents>
-        <Component class="java.awt.Canvas" name="canvas1">
-        </Component>
-      </SubComponents>
     </Container>
     <Component class="javax.swing.JSlider" name="anchoTrazo">
       <Properties>
@@ -597,11 +596,6 @@
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonAbrirMousePressed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JSeparator" name="separador1">
-      <Properties>
-        <Property name="orientation" type="int" value="1"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JButton" name="botonTexto">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -612,11 +606,6 @@
       <Events>
         <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="botonTextoMousePressed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JSeparator" name="separador2">
-      <Properties>
-        <Property name="orientation" type="int" value="1"/>
-      </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="botonBorrar">
       <Properties>
@@ -638,26 +627,10 @@
         <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
-    <Container class="javax.swing.JToolBar" name="jToolBar1">
+    <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="floatable" type="boolean" value="false"/>
+        <Property name="text" type="java.lang.String" value="X:000, Y:000"/>
       </Properties>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jLabel1"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel2">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jLabel1"/>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
+    </Component>
   </SubComponents>
 </Form>

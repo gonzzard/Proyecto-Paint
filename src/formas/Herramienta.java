@@ -1,11 +1,12 @@
 package formas;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 /**
  * @author Gonzalo de las heras
  */
-public interface Herramienta {
+public interface Herramienta extends Shape{
 
     /**
      * Método para mover la posición actual de la figura.

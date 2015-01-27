@@ -8,7 +8,7 @@ import java.awt.geom.Ellipse2D;
  * @author Gonzalo de las Heras
  * @version 1.0
  */
-public class Elipse extends Ellipse2D.Double implements Herramienta {
+public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
 
     /**
      * Variable que indica la posición x de inicio de la elipse.
@@ -27,8 +27,9 @@ public class Elipse extends Ellipse2D.Double implements Herramienta {
     }
 
     /**
-     * Método para mover la posición actual de la figura.
+     * Método para mover la posición actual de la elipse.
      */
+   
     @Override
     public void mover() {
 
@@ -42,6 +43,7 @@ public class Elipse extends Ellipse2D.Double implements Herramienta {
      * @param g2 Elemento gráfico para saber donde pintar la elipse, una vez
      * tenemos sus paremétros definidos.
      */
+   
     @Override
     public void reposicionar(java.awt.event.MouseEvent evt, Graphics2D g2) {
         if (evt.getX() > xOrigen) {
@@ -59,12 +61,13 @@ public class Elipse extends Ellipse2D.Double implements Herramienta {
         this.pintar(g2);
     }
 
-    @Override
+   
     /**
      * Método para pintar la elipse en un elemento gráfico.
      *
      * @param g2 Elemento gráfico para saber donde pintar.
      */
+    @Override
     public void pintar(Graphics2D g2) {
         g2.draw(this);
     }
@@ -74,6 +77,7 @@ public class Elipse extends Ellipse2D.Double implements Herramienta {
      *
      * @param evt Evento empleado para saber la posición actual del ratón.
      */
+  
     @Override
     public void iniciar(java.awt.event.MouseEvent evt) {
         // Esquina superior izq circulo
