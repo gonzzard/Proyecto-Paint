@@ -1,6 +1,8 @@
 package formas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 
 /**
@@ -8,7 +10,7 @@ import java.awt.geom.Ellipse2D;
  * @author Gonzalo de las Heras
  * @version 1.0
  */
-public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
+public class Elipse extends Ellipse2D.Double implements formas.Herramienta {
 
     /**
      * Variable que indica la posición x de inicio de la elipse.
@@ -18,18 +20,26 @@ public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
      * Variable que indica la posición y de inicio de la elipse.
      */
     protected double yOrigen;
+    Color colorTrazo;
+    Color colorRelleno;
+    Stroke anchoTrazo;
 
     /**
      * Constructor por defecto.
+     * @param colorTrazo
+     * @param anchoTrazo
+     * @param colorRelleno
      */
-    public Elipse() {
+    public Elipse(Color colorTrazo,Stroke anchoTrazo,Color colorRelleno) {
         super();
+        this.colorTrazo = colorTrazo;
+        this.anchoTrazo = anchoTrazo;
+        this.colorRelleno = colorRelleno;
     }
 
     /**
      * Método para mover la posición actual de la elipse.
      */
-   
     @Override
     public void mover() {
 
@@ -43,9 +53,9 @@ public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
      * @param g2 Elemento gráfico para saber donde pintar la elipse, una vez
      * tenemos sus paremétros definidos.
      */
-   
     @Override
     public void reposicionar(java.awt.event.MouseEvent evt, Graphics2D g2) {
+        //g2.setColor(this.colorSeleccionado);
         if (evt.getX() > xOrigen) {
             this.width = evt.getX() - this.x;
         } else {
@@ -61,7 +71,6 @@ public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
         this.pintar(g2);
     }
 
-   
     /**
      * Método para pintar la elipse en un elemento gráfico.
      *
@@ -69,7 +78,13 @@ public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
      */
     @Override
     public void pintar(Graphics2D g2) {
-        g2.draw(this);
+        g2.setStroke(this.anchoTrazo);
+        g2.setColor(this.colorTrazo);
+       
+        g2.draw(this); 
+        g2.setPaint(colorRelleno);
+        if (this.colorRelleno!=null)
+        g2.fill(this);
     }
 
     /**
@@ -77,7 +92,6 @@ public class Elipse extends Ellipse2D.Double implements formas.Herramienta{
      *
      * @param evt Evento empleado para saber la posición actual del ratón.
      */
-  
     @Override
     public void iniciar(java.awt.event.MouseEvent evt) {
         // Esquina superior izq circulo

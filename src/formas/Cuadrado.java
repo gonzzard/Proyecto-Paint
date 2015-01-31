@@ -1,6 +1,8 @@
 package formas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 /**
  *
@@ -11,8 +13,8 @@ public class Cuadrado extends Rectangulo {
     /**
      * Constructor por defecto.
      */
-    public Cuadrado() {
-        super();
+    public Cuadrado(Color color, Stroke ancho) {
+        super(color, ancho);
     }
 
     /**
@@ -32,6 +34,7 @@ public class Cuadrado extends Rectangulo {
      */
     @Override
     public void reposicionar(java.awt.event.MouseEvent evt, Graphics2D g2) {
+        g2.setColor(this.colorSeleccionado);
         double xDistancia = xOrigen - evt.getX();
         if (xDistancia < 0) {
             xDistancia = evt.getX() - xOrigen;

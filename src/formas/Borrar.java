@@ -8,30 +8,22 @@ package formas;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.util.ArrayList;
-
 
 /**
  *
- * @author Gonzalo
+ * @author Gonzalo de las Heras
  */
-public class DibujoLibre extends Linea {
+public class Borrar extends DibujoLibre {
 
-    ArrayList<Linea> trazos = new ArrayList<>();
-    int trazoActual = 0;
-    Linea lineaAux;
-   
-
-    public DibujoLibre(Color color, Stroke ancho) {
-        super(color, ancho);
-        
+    public Borrar(Stroke ancho) {
+        super(new Color(Color.WHITE.getRGB()),ancho);
     }
 
     /**
      * Método para mover la posición actual de la figura.
      */
-    @Override
     public void mover() {
+
     }
 
     /**
@@ -42,10 +34,9 @@ public class DibujoLibre extends Linea {
      * @param g2 Elemento gráfico para saber donde pintar la elipse, una vez
      * tenemos sus paremétros definidos.
      */
-    @Override
     public void reposicionar(java.awt.event.MouseEvent evt, Graphics2D g2) {
-         g2.setStroke(anchoTrazoSeleccionado);
         g2.setColor(this.colorSeleccionado);
+        //g2.setStroke(null);
         // Defino el final del trazo actual.
         trazos.get(trazoActual).x2 = evt.getX();
         trazos.get(trazoActual).y2 = evt.getY();
@@ -56,7 +47,7 @@ public class DibujoLibre extends Linea {
             g2.drawLine((int) trazos.get(trazoActual).x1, (int) trazos.get(trazoActual).y1,
                     (int) trazos.get(trazoActual).x2, (int) trazos.get(trazoActual).y2);
             trazoActual++;
-            lineaAux = new Linea(this.colorSeleccionado,this.anchoTrazoSeleccionado);
+            lineaAux = new Linea(this.colorSeleccionado, this.anchoTrazoSeleccionado);
             lineaAux.x1 = trazos.get(trazoActual - 1).x2;
             lineaAux.y1 = trazos.get(trazoActual - 1).y2;
             lineaAux.x2 = trazos.get(trazoActual - 1).x2;
@@ -70,13 +61,12 @@ public class DibujoLibre extends Linea {
      *
      * @param g2 Elemento gráfico para saber donde pintar.
      */
-    @Override
     public void pintar(Graphics2D g2) {
         g2.setColor(this.colorSeleccionado);
-         g2.setStroke(anchoTrazoSeleccionado);
         for (Linea trazo : trazos) {
             g2.drawLine((int) trazo.x1, (int) trazo.y1, (int) trazo.x2, (int) trazo.y2);
         }
+
     }
 
     /**
@@ -84,9 +74,8 @@ public class DibujoLibre extends Linea {
      *
      * @param evt Evento empleado para saber la posición actual del ratón.
      */
-    @Override
     public void iniciar(java.awt.event.MouseEvent evt) {
-        lineaAux = new Linea(this.colorSeleccionado,this.anchoTrazoSeleccionado);
+        lineaAux = new Linea(this.colorSeleccionado, this.anchoTrazoSeleccionado);
         lineaAux.x1 = evt.getX();
         lineaAux.y1 = evt.getY();
         trazos.add(lineaAux);

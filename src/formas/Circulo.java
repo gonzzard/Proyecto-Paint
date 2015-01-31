@@ -1,6 +1,8 @@
 package formas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -14,9 +16,11 @@ public class Circulo extends Elipse {
 
     /**
      * Constructor por defecto.
+     * @param color
+     * @param ancho
      */
-    public Circulo() {
-        super();
+    public Circulo(Color colorTrazo, Stroke anchoTrazo, Color colorRelleno) {
+        super(colorTrazo, anchoTrazo, colorRelleno);
     }
 
     /**

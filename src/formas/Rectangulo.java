@@ -1,6 +1,8 @@
 package formas;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -11,12 +13,16 @@ public class Rectangulo extends Rectangle2D.Double implements formas.Herramienta
 
     protected double xOrigen;
     protected double yOrigen;
+    Color colorSeleccionado;
+    Stroke anchoTrazoSeleccionado;
 
     /**
      * Constructor por defecto.
      */
-    public Rectangulo() {
+    public Rectangulo(Color color, Stroke ancho) {
         super();
+        this.colorSeleccionado= color;
+        this.anchoTrazoSeleccionado = ancho;
     }
 
     /**
@@ -38,6 +44,7 @@ public class Rectangulo extends Rectangle2D.Double implements formas.Herramienta
     
     @Override
     public void reposicionar(java.awt.event.MouseEvent evt, Graphics2D g2) {
+       // g2.setColor(this.colorSeleccionado);
         if (evt.getX() > xOrigen) {
             this.width = evt.getX() - this.x;
         } else {
@@ -62,6 +69,8 @@ public class Rectangulo extends Rectangle2D.Double implements formas.Herramienta
   
     @Override
     public void pintar(Graphics2D g2) {
+        g2.setStroke(this.anchoTrazoSeleccionado);
+        g2.setColor(this.colorSeleccionado);
         g2.draw(this);
     }
 
